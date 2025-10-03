@@ -1,0 +1,185 @@
+[
+  {
+    "id": "infinite-loop",
+    "title": "The Case of the Infinite Loop",
+    "description": "The app freezes. CPU screams. Somewhere, a loop forgets how to end.",
+    "answers": ["infinite loop", "loop never ends", "i--", "wrong direction update", "fencepost", "off by one"],
+    "codeBuggy": "// Crime Scene: suspicious loop\nfunction sumArray(arr) {\n  let sum = 0;\n  let i = 0;\n  while (i <= arr.length) {     // <= feels… off\n    sum += arr[i];              // sometimes undefined?\n    i--;                        // wait… why downwards?\n  }\n  return sum;\n}",
+    "codeFixed": "function sumArray(arr) {\n  let sum = 0;\n  for (let i = 0; i < arr.length; i++) {\n    sum += arr[i];\n  }\n  return sum;\n}",
+    "clues": [
+      "Process stuck; UI frozen. The loop never yields.",
+      "Index i starts at 0, then moves negative due to i--.",
+      "Condition i <= arr.length stays true for negative i.",
+      "arr[arr.length] is undefined; arithmetic goes bad."
+    ],
+    "witnesses": [
+      "i: 0 → -1 → -2 … (wrong direction)",
+      "arr.length: fixed boundary",
+      "arr[i]: negative index is invalid"
+    ],
+    "timeline": [
+      "Setup: i = 0",
+      "Check: i <= length → true",
+      "Body: sum += arr[i]",
+      "Update: i--",
+      "Condition remains true for negatives → infinite"
+    ],
+    "culprit": "Wrong direction update with fencepost condition",
+    "images": []
+  },
+  {
+    "id": "missing-semicolon",
+    "title": "The Missing Semicolon",
+    "description": "A tiny mark disappears; parsing goes sideways.",
+    "answers": ["missing semicolon", "asi", "automatic semicolon insertion", "return newline"],
+    "codeBuggy": "function greet(name) {\n  return\n  { message: 'Hello, ' + name }\n}",
+    "codeFixed": "function greet(name) {\n  return {\n    message: 'Hello, ' + name\n  };\n}",
+    "clues": [
+      "Unexpected token { near return.",
+      "Automatic Semicolon Insertion strikes after return.",
+      "Object literal moves to unreachable line."
+    ],
+    "witnesses": [
+      "Tokenizer: inserts semicolon at line break",
+      "Return statement: ends early",
+      "Object literal: becomes dead code"
+    ],
+    "timeline": [
+      "return followed by newline",
+      "ASI inserts semicolon",
+      "Function returns undefined",
+      "Object literal never evaluated"
+    ],
+    "culprit": "Line break after return without wrapping the object",
+    "images": []
+  },
+  {
+    "id": "phantom-null",
+    "title": "The Phantom Null",
+    "description": "Undefined wears a null mask; comparisons mislead the crowd.",
+    "answers": ["null", "undefined", "loose equality", "==", "missing name property"],
+    "codeBuggy": "function loadUser(u) {\n  if (u == null) {\n    return 'No user';\n  }\n  return u.name.toUpperCase();\n}",
+    "codeFixed": "function loadUser(u) {\n  if (u === null || u === undefined) {\n    return 'No user';\n  }\n  return String(u.name ?? '').toUpperCase();\n}",
+    "clues": [
+      "Cannot read properties of undefined (reading 'name')",
+      "Loose equality conflates null and undefined",
+      "Optional fields can be missing"
+    ],
+    "witnesses": [
+      "u: sometimes undefined",
+      "u.name: may be absent",
+      "== operator: too permissive"
+    ],
+    "timeline": [
+      "Check u == null passes for undefined",
+      "But branch returns early only when null/undefined",
+      "Else path assumes u.name exists",
+      "Access throws when name missing"
+    ],
+    "culprit": "Assuming name exists; loose equality hides undefined/null differences",
+    "images": []
+  },
+  {
+    "id": "switch-fallthrough",
+    "title": "The Switch Without Breaks",
+    "description": "One choice, many consequences.",
+    "answers": ["missing break", "fallthrough", "default overwrites"],
+    "codeBuggy": "function fare(zone) {\n  let price = 0;\n  switch(zone) {\n    case 1: price = 2;\n    case 2: price = 3;\n    case 3: price = 5;\n    default: price = 7;\n  }\n  return price;\n}",
+    "codeFixed": "function fare(zone) {\n  switch(zone) {\n    case 1: return 2;\n    case 2: return 3;\n    case 3: return 5;\n    default: return 7;\n  }\n}",
+    "clues": [
+      "All zones cost 7",
+      "Cases cascade; default overwrites"
+    ],
+    "witnesses": [
+      "Missing break after each case",
+      "price reassigned multiple times"
+    ],
+    "timeline": [
+      "Enter case",
+      "Fall through to default",
+      "Final assignment overwrites"
+    ],
+    "culprit": "Missing breaks cause fall-through to default",
+    "images": []
+  },
+  {
+    "id": "nullish-misuse",
+    "title": "The Nullish Mirage",
+    "description": "Falsy values mistaken for missing data.",
+    "answers": ["nullish coalescing", "??", "|| vs ??", "falsy"],
+    "codeBuggy": "function label(val){ return val || 'N/A'; } // 0 becomes 'N/A'",
+    "codeFixed": "function label(val){ return (val ?? 'N/A'); }",
+    "clues": ["0 unexpectedly replaced", "'' becomes 'N/A'"],
+    "witnesses": ["|| treats 0/''/false as missing", "?? only treats null/undefined as missing"],
+    "timeline": ["Render label", "Falsy value provided", "OR replaces it"],
+    "culprit": "Using || instead of ?? for nullish defaulting",
+    "images": []
+  },
+  {
+    "id": "shallow-copy-trap",
+    "title": "The Shallow Copy Trap",
+    "description": "Nested objects change from the shadows.",
+    "answers": ["shallow copy", "spread operator", "deep clone"],
+    "codeBuggy": "const a={prefs:{dark:true}}; const b={...a}; b.prefs.dark=false; // a.prefs.dark mutated",
+    "codeFixed": "const a={prefs:{dark:true}}; const b=JSON.parse(JSON.stringify(a)); b.prefs.dark=false;",
+    "clues": ["Original object changes", "Spread didn't isolate nested data"],
+    "witnesses": ["prefs references same object"],
+    "timeline": ["Clone via spread", "Mutate nested", "Original reflects change"],
+    "culprit": "Using shallow clone where deep clone is required",
+    "images": []
+  },
+  {
+    "id": "greedy-regex",
+    "title": "The Greedy Matcher",
+    "description": "A regex eats more than intended.",
+    "answers": ["greedy regex", ".* vs .*?", "non-greedy"],
+    "codeBuggy": "const tag=/<(.*)>/; '<div>hi</div>'.match(tag)[1]; // 'div>hi</div'",
+    "codeFixed": "const tag=/<(.*?)>/; '<div>hi</div>'.match(tag)[1]; // 'div'",
+    "clues": ["Match spans too far", "Uses .* greedy"],
+    "witnesses": ["Regex: greedy quantifier"],
+    "timeline": ["Run match", "Consumes until last >", "Unexpected group"],
+    "culprit": "Greedy quantifier used where lazy needed",
+    "images": []
+  },
+  {
+    "id": "ms-vs-s",
+    "title": "The Millisecond Mix-up",
+    "description": "A timer runs a thousand times too long.",
+    "answers": ["milliseconds vs seconds", "ms vs s", "Date.now mismatch"],
+    "codeBuggy": "const ttlSeconds = 60; const expiresAt = Date.now() + ttlSeconds; // adds 60ms",
+    "codeFixed": "const ttlSeconds = 60; const expiresAt = Date.now() + ttlSeconds*1000;",
+    "clues": ["Items expire instantly or too early", "Math off by x1000"],
+    "witnesses": ["Date.now returns ms", "ttl was seconds"],
+    "timeline": ["Compute expiry", "Forget *1000", "Wrong TTL"],
+    "culprit": "Mixing seconds with millisecond timestamps",
+    "images": []
+  },
+  {
+    "id": "setstate-async",
+    "title": "The Stale State Mystery",
+    "description": "UI updates from yesterday's news.",
+    "answers": ["stale state", "functional setState", "closure"],
+    "codeBuggy": "// React-like\nlet count=0;\nfunction inc(){ setTimeout(()=>{ count = count + 1; render(); }, 0); }\n",
+    "codeFixed": "// React-like (conceptual)\nfunction inc(){ setTimeout(()=>{ setCount(prev=>prev+1); }, 0); }\n",
+    "clues": ["Rapid clicks drop increments", "Uses captured value"],
+    "witnesses": ["Closure holds old count"],
+    "timeline": ["Click many times", "Timers run later", "Overwrite with stale"],
+    "culprit": "Using stale captured state instead of functional update",
+    "images": []
+  },
+  {
+    "id": "cors-preflight",
+    "title": "The Preflight Ambush",
+    "description": "A simple POST fails before it begins.",
+    "answers": ["cors", "preflight", "access-control-allow-origin"],
+    "codeBuggy": "// Server omits CORS headers for OPTIONS\n",
+    "codeFixed": "// Server responds to OPTIONS with Access-Control-Allow-Origin, -Methods, -Headers\n",
+    "clues": ["CORS error in console", "OPTIONS request 4xx/blocked"],
+    "witnesses": ["Missing Access-Control-Allow-Origin", "Missing Allow-Methods/Headers"],
+    "timeline": ["Browser sends preflight", "Server rejects", "Actual POST never sent"],
+    "culprit": "Server missing CORS preflight response",
+    "images": []
+  }
+]
+
+

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Debugging Detective</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="grain"></div>
+    <div id="splash" class="splash" aria-hidden="true">
+      <img src="animated-detective-image-0006.gif" alt="Detective loading" class="splash-img" />
+      <div id="splashText" class="splash-text"></div>
+    </div>
+    <header class="site-header">
+      <h1 class="title">The Debugging Detective</h1>
+      <p class="tagline">Solve coding crimes. One clue at a time.</p>
+      <div class="hud">
+        <div class="score">Score: <span id="scoreVal">0</span></div>
+        <button id="howToBtn" class="btn btn-ghost">How to Play</button>
+        <label class="sound-toggle">
+          <input type="checkbox" id="soundToggle" checked />
+          <span>Sound</span>
+        </label>
+        <label class="sound-toggle">
+          <input type="checkbox" id="musicToggle" checked />
+          <span>Music</span>
+        </label>
+        <label class="sound-toggle">
+          <input type="checkbox" id="spoilerToggle" checked />
+          <span>Spoiler Shield</span>
+        </label>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="case-selector" aria-label="Case Selection">
+        <button id="startBtn" class="btn btn-primary">Start Case</button>
+        <select id="caseSelect" class="select">
+          <!-- Populated by script.js -->
+        </select>
+        <div class="answer-box">
+          <input id="answerInput" class="input" type="text" placeholder="Your Answer (e.g., stack overflow)…" />
+          <button id="submitAnswerBtn" class="btn">Submit</button>
+          <button id="skipInvestigationBtn" class="btn btn-ghost">Skip to Investigation</button>
+        </div>
+      </section>
+
+      <section class="case-board" aria-live="polite">
+        <div class="board-left">
+          <div class="card">
+            <h2 id="caseTitle" class="card-title">No Case Loaded</h2>
+            <p id="caseDesc" class="muted">Choose a case and press Start.</p>
+          </div>
+
+          <div class="card code-card">
+            <div class="code-header">
+              <span id="codeLabel" class="badge">Crime Scene</span>
+            </div>
+            <pre class="code"><code id="codeBlock"></code></pre>
+          </div>
+        </div>
+
+        <div class="board-right">
+          <div class="card clue-card">
+            <h3 class="card-subtitle">Clue</h3>
+            <div id="clueBox" class="clue-box">Press "Start" to investigate.</div>
+            <div id="feedbackBox" class="muted" style="margin-top:8px"></div>
+          </div>
+
+          <div class="card controls-card">
+            <h3 class="card-subtitle">Investigation Controls</h3>
+            <div class="controls">
+              <button id="nextClueBtn" class="btn" disabled>Next Clue</button>
+              <button id="witnessBtn" class="btn" disabled>Interview Witnesses</button>
+              <button id="timelineBtn" class="btn" disabled>Reconstruct Timeline</button>
+              <button id="culpritBtn" class="btn" disabled>Reveal Culprit</button>
+              <button id="fixBtn" class="btn btn-success" disabled>Apply Fix</button>
+              <button id="resetBtn" class="btn btn-ghost" disabled>Reset</button>
+            </div>
+          </div>
+
+          <div class="card status-card">
+            <h3 class="card-subtitle">Status</h3>
+            <ul id="statusList" class="status-list">
+              <!-- Populated dynamically -->
+            </ul>
+          </div>
+
+      
+        </div>
+      </section>
+    </main>
+<!-- 
+    <footer class="site-footer">
+      <span>Case files updated nightly.</span>
+    </footer> -->
+
+    <!-- How To Play Modal -->
+    <div id="howToOverlay" class="modal-overlay" hidden></div>
+    <div id="howToModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="howToTitle" hidden>
+      <div class="modal-header">
+        <h3 id="howToTitle">How to Play</h3>
+        <button id="howToClose" class="btn btn-ghost" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <ol class="howto-list">
+          <li><strong>Select a case</strong>, then click <em>Start Case</em>.</li>
+          <li><strong>Guess the culprit</strong> in the answer box, then press <em>Submit</em>.</li>
+          <li><strong>Click Skip to Investigation</strong> to unlock investigation steps.</li>
+          <li>Follow: <strong>Clues → Witnesses → Timeline → Culprit → Fix</strong>.</li>
+          <li><strong>Spoiler Shield</strong> hides spoilers in titles/descriptions and comments.</li>
+          <li>Toggle <strong>Sound</strong> and <strong>Music</strong> in the header.</li>
+          <li>Score points for each step; close the case to win big.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Audio cues -->
+    <audio id="sfxClue" preload="auto">
+      <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav" />
+    </audio>
+    <audio id="sfxSuccess" preload="auto">
+      <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=" type="audio/wav" />
+    </audio>
+    <audio id="sfxClick" src="mixkit-sci-fi-click-900.wav" preload="auto"></audio>
+    <audio id="sfxClickAlt" src="mixkit-collect-material-3209.wav" preload="auto"></audio>
+
+    <!-- Background music (user gesture required to start) -->
+    <audio id="bgm" src="shadows-of-a-forgotten-crime-378727.mp3" preload="auto" loop autoplay playsinline></audio>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
+

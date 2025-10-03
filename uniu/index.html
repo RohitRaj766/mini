@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Diwali (Deepavali) Special Celebration Page" />
+    <title>Diwali Special</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <canvas id="fireworks" aria-hidden="true"></canvas>
+
+    <header class="site-header" role="banner">
+        <div class="logo">🪔 Diwali</div>
+        <nav class="site-nav" aria-label="Primary">
+            <a href="#about">About</a>
+            <a href="#wishes">Wishes</a>
+            <a href="#gallery">Gallery</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="toran" aria-hidden="true"></div>
+            <div class="lanterns" aria-hidden="true">
+                <div class="lantern l1"></div>
+                <div class="lantern l2"></div>
+                <div class="lantern l3"></div>
+            </div>
+            <div class="hero-inner">
+                <h1 id="hero-title" class="gradient-text">Wishing You a Joyous Diwali</h1>
+                <p class="subtitle">May your life be as colorful, shimmering and magical as the lights of Diwali.</p>
+                <div class="hero-actions">
+                    <button id="lightDiyasBtn" class="btn primary">Light the Diyas</button>
+                    <button id="burstBtn" class="btn ghost">Fireworks</button>
+                </div>
+            </div>
+            <div class="diyas" aria-hidden="true">
+                <div class="diya">
+                    <span class="flame"></span>
+                    <span class="glow"></span>
+                </div>
+                <div class="diya">
+                    <span class="flame"></span>
+                    <span class="glow"></span>
+                </div>
+                <div class="diya">
+                    <span class="flame"></span>
+                    <span class="glow"></span>
+                </div>
+            </div>
+            <div class="divider wave" aria-hidden="true"></div>
+        </section>
+
+        <section id="about" class="section">
+            <div class="container">
+                <h2>About Diwali</h2>
+                <p>
+                    Diwali, the Festival of Lights, symbolizes the spiritual victory of light over darkness,
+                    good over evil, and knowledge over ignorance. Homes are illuminated with diyas, rangoli
+                    decorates the floors, sweets are shared, and joy is celebrated with family and friends.
+                </p>
+            </div>
+        </section>
+
+        <section id="wishes" class="section wishes">
+            <div class="container">
+                <h2>Warm Wishes</h2>
+                <ul class="wish-grid" role="list">
+                    <li class="wish">Prosperity and success in all your endeavors.</li>
+                    <li class="wish">Abundant health, happiness, and harmony.</li>
+                    <li class="wish">A home filled with love and sparkling lights.</li>
+                    <li class="wish">New beginnings and cherished memories.</li>
+                    <li class="wish">Peaceful moments with friends and family.</li>
+                    <li class="wish">Endless reasons to smile every day.</li>
+                </ul>
+            </div>
+            <div class="divider dots" aria-hidden="true"></div>
+        </section>
+
+        <section id="gallery" class="section gallery">
+            <div class="container">
+                <h2>Festive Gallery</h2>
+                <div class="grid">
+                    <figure class="card">
+                        <img src="https://images.unsplash.com/photo-1603145733161-4f4f0f5b0b65?q=80&w=1200&auto=format&fit=crop" alt="Lit diyas arranged in a pattern" />
+                    </figure>
+                    <figure class="card">
+                        <img src="https://images.unsplash.com/photo-1542044801-87c4c8d2b4b1?q=80&w=1200&auto=format&fit=crop" alt="Colorful rangoli design" />
+                    </figure>
+                    <figure class="card">
+                        <img src="https://images.unsplash.com/photo-1602874828409-9138d9b41b25?q=80&w=1200&auto=format&fit=crop" alt="Sparkling fireworks in the night sky" />
+                    </figure>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+        <p>Happy Diwali ✨ | Made with love</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
